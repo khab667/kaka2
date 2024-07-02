@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Personnelle de [Ton Nom]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+        }
+        nav a {
+            color: #fff;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover {
+            background-color: #555;
+        }
+        section {
+            padding: 20px;
+            margin: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bienvenue sur la page personnelle de [Ton Nom]</h1>
+    </header>
+    <nav>
+        <a href="#about">À propos de moi</a>
+        <a href="#interests">Centres d'intérêt</a>
+        <a href="#projects">Projets</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    <section id="about">
+        <h2>À propos de moi</h2>
+        <p>Je suis passionné par la vente et j'ai développé une expertise particulière dans ce domaine. Mon amour pour la vente m'a permis de m'épanouir et de réussir dans divers projets.</p>
+    </section>
+    <section id="interests">
+        <h2>Centres d'intérêt</h2>
+        <p>Je suis particulièrement intéressé par la vente de voitures dans GTA RP. J'aime l'aspect stratégique et les interactions avec les autres joueurs, ce qui me permet de perfectionner mes compétences de négociation et de vente dans un environnement ludique.</p>
+    </section>
+    <section id="projects">
+        <h2>Projets</h2>
+        <p>Un de mes projets les plus ambitieux est la création du plus grand salon auto de la ville. Ce projet vise à réunir les passionnés de voitures et à offrir une plateforme pour découvrir les dernières innovations et modèles de voitures dans GTA RP.</p>
+    </section>
+    <section id="contact">
+        <h2>Contact</h2>
+        <p>Si vous souhaitez me contacter, vous pouvez m'envoyer un email à <a href="mailto:tonemail@example.com">tonemail@example.com</a>.</p>
+    </section>
+    <footer>
+        <p>&copy; 2024 [Ton Nom]. Tous droits réservés.</p>
+    </footer>
+</body>
+</html>
