@@ -22,6 +22,7 @@ montage vertical 1080x1920 prêt pour TikTok / Reels / Shorts, où **chaque coup
 | `velocity` | 1 plan / 2 beats | accéléré → ralenti à chaque plan, flou de mouvement |
 | `cinematique` | 1 plan / 2 à 4 beats | ralentis, couleurs film, grain, zooms doux |
 | `classique` | 1 plan / 2 beats | coupes nettes, zooms légers |
+| `art` | 1 plan / 2 à 4 beats | façon « the art of. » : image carrée sur fond noir, petit texte centré, ralentis |
 
 ## Installation
 
@@ -49,7 +50,9 @@ python3 -m fedit render mon-edit.yaml --variantes 3
 Les vidéos arrivent dans `rendus/`, avec un fichier `.plan.json` qui détaille chaque plan
 (moment de la musique, vidéo source, minute utilisée).
 
-Options utiles : `--style hype|velocity|cinematique|classique`, `--duree 25`, `--fps 60`.
+Options utiles : `--style hype|velocity|cinematique|classique|art`, `--duree 25`, `--fps 60`.
+
+Textes : `titre` (et `sous_titre`) s'affichent jusqu'au drop, `legende` après le drop.
 
 ### Autres commandes
 
@@ -63,6 +66,14 @@ python3 -m fedit reference "https://vm.tiktok.com/..."
 # Télécharger une vidéo ou une musique
 python3 -m fedit download "https://www.youtube.com/watch?v=..." [--audio]
 ```
+
+## YouTube et TikTok
+
+- **TikTok** fonctionne partout, y compris depuis un serveur cloud.
+- **YouTube** bloque les téléchargements depuis les serveurs cloud (erreur 403), même quand l'accès réseau
+  est autorisé. Depuis ton ordinateur ça marche directement (installe [Node.js](https://nodejs.org) ou
+  [Deno](https://deno.com), dont yt-dlp a besoin pour YouTube). Si besoin, un fichier de cookies se passe
+  avec `FEDIT_COOKIES=chemin/cookies.txt`.
 
 ## Conseils pour un montage réussi
 

@@ -39,6 +39,14 @@ def _source_filter(shot: Shot, style: Style, out: Output) -> str:
     W, H = out.width, out.height
     src_fps = c.fps if c.fps <= 61 else 60
     pre = f"fps={src_fps:.6f}"
+    if style.framing == "square":
+        # Carré centré sur l'action, posé au milieu d'un fond noir.
+        side = min(c.width, c.height)
+        side = min(_even(side / style.frame_zoom), side - side % 2)
+        x = int(np.clip(shot.center_x * c.width - side / 2, 0, c.width - side))
+        y = (c.height - side) // 2
+        return (f"{pre},crop={side}:{side}:{x}:{y},scale={W}:{W}:flags=lanczos,{style.grade},"
+                f"pad={W}:{H}:0:{(H - W) // 2 // 2 * 2}:black")
     if style.framing == "fit":
         fg_w = _even(W * style.frame_zoom)
         return (
@@ -100,7 +108,8 @@ class SourceReader:
         self.proc.wait()
 
 
-def _title_image(title: str, subtitle: str, width: int) -> np.ndarray | None:
+def _title_image(title: str, subtitle: str, width: int, size_frac: float = 0.16,
+                 upper: bool = True) -> np.ndarray | None:
     if not title and not subtitle:
         return None
     from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -110,17 +119,18 @@ def _title_image(title: str, subtitle: str, width: int) -> np.ndarray | None:
     def font(size):
         return ImageFont.truetype(font_path, size) if font_path else ImageFont.load_default()
 
+    case = str.upper if upper else str
     lines = []
     if title:
-        size = int(width * 0.16)
+        size = int(width * size_frac)
         f = font(size)
-        while f.getlength(title.upper()) > width * 0.88 and size > 20:
+        while f.getlength(case(title)) > width * 0.88 and size > 20:
             size -= 4
             f = font(size)
-        lines.append((title.upper(), f, (255, 255, 255)))
+        lines.append((case(title), f, (255, 255, 255)))
     if subtitle:
-        lines.append((subtitle.upper(), font(int(width * 0.05)), (235, 235, 235)))
-    pad = int(width * 0.04)
+        lines.append((case(subtitle), font(max(12, int(width * size_frac * 0.32))), (235, 235, 235)))
+    pad = max(4, int(width * size_frac * 0.25))
     heights = [f.getbbox(t)[3] for t, f, _ in lines]
     h = sum(heights) + pad * (len(lines) + 1)
     img = Image.new("RGBA", (width, h), (0, 0, 0, 0))
@@ -131,20 +141,21 @@ def _title_image(title: str, subtitle: str, width: int) -> np.ndarray | None:
         draw.text((x, y), text, font=f, fill=color + (255,))
         y += lh + pad
     shadow = Image.new("RGBA", img.size, (0, 0, 0, 0))
-    shadow.putalpha(img.getchannel("A").filter(ImageFilter.GaussianBlur(width * 0.012)))
+    shadow.putalpha(img.getchannel("A").filter(ImageFilter.GaussianBlur(max(2, width * size_frac * 0.075))))
     out = Image.alpha_composite(shadow, img)
     return cv2.cvtColor(np.array(out), cv2.COLOR_RGBA2BGRA)
 
 
 class Effects:
     def __init__(self, style: Style, out: Output, beats: np.ndarray, downbeat: np.ndarray,
-                 drop: float, total: float, title: np.ndarray | None, title_end: float, seed: int):
+                 drop: float, total: float, title: np.ndarray | None, title_end: float, seed: int,
+                 caption: np.ndarray | None = None):
         self.s, self.out = style, out
         self.beats, self.downbeat, self.drop, self.total = beats, downbeat, drop, total
         self.k = out.width / 1080  # les réglages en pixels sont donnés pour du 1080p
         rng = np.random.default_rng(seed)
         self.dirs = rng.uniform(0, 2 * math.pi, 512)
-        self.title, self.title_end = title, title_end
+        self.title, self.title_end, self.caption = title, title_end, caption
         W, H = out.width, out.height
         if style.vignette:
             yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
@@ -202,7 +213,9 @@ class Effects:
             if alpha > 0.01:
                 f = cv2.convertScaleAbs(f, alpha=1 - alpha, beta=255 * alpha)
         if self.title is not None and T < self.title_end:
-            f = self._draw_title(np.ascontiguousarray(f) if f is not frame else f.copy(), T, dt_beat)
+            f = self._draw_text(f if f is not frame else f.copy(), self.title, T, 0.0, self.title_end, dt_beat)
+        elif self.caption is not None and T >= self.title_end:
+            f = self._draw_text(f if f is not frame else f.copy(), self.caption, T, self.title_end, self.total, dt_beat)
         fade = 1.0
         if s.fade_in > 0:
             fade = min(fade, T / s.fade_in)
@@ -220,15 +233,16 @@ class Effects:
             out[H - bh :] = 0
         return out
 
-    def _draw_title(self, f: np.ndarray, T: float, dt_beat: float) -> np.ndarray:
-        img = self.title
-        appear = min(1.0, T / 0.25) * min(1.0, (self.title_end - T) / 0.15)
-        scale = 1 + 0.07 * math.exp(-dt_beat / 0.1) + 0.15 * max(0.0, 1 - T / 0.25) ** 2
+    def _draw_text(self, f: np.ndarray, img: np.ndarray, T: float, start: float, end: float, dt_beat: float) -> np.ndarray:
+        t = T - start
+        appear = min(1.0, t / 0.25) * min(1.0, (end - T) / 0.15)
+        pop = self.s.text_pulse / 0.07 * 0.15
+        scale = 1 + self.s.text_pulse * math.exp(-dt_beat / 0.1) + pop * max(0.0, 1 - t / 0.25) ** 2
         h, w = img.shape[:2]
         nw, nh = int(w * scale), int(h * scale)
         img = cv2.resize(img, (nw, nh), interpolation=cv2.INTER_LINEAR)
         W, H = self.out.width, self.out.height
-        x0, y0 = (W - nw) // 2, int(H * 0.72 - nh / 2)
+        x0, y0 = (W - nw) // 2, int(H * self.s.text_y - nh / 2)
         xa, ya, xb, yb = max(0, x0), max(0, y0), min(W, x0 + nw), min(H, y0 + nh)
         crop = img[ya - y0 : yb - y0, xa - x0 : xb - x0].astype(np.float32)
         alpha = crop[..., 3:4] / 255 * appear
@@ -239,14 +253,15 @@ class Effects:
 
 def render(segments: list[Segment], shots: list[Shot], style: Style, out: Output,
            music: str, music_start: float, beats: np.ndarray, downbeat: np.ndarray, drop: float,
-           output_path: str, title: str = "", subtitle: str = "", seed: int = 0, log=print):
+           output_path: str, title: str = "", subtitle: str = "", caption: str = "", seed: int = 0, log=print):
     total = segments[-1].end
     n_total = int(round(total * out.fps))
-    title_img = _title_image(title, subtitle, out.width)
+    title_img = _title_image(title, subtitle, out.width, style.text_size, style.text_upper)
+    caption_img = _title_image(caption, "", out.width, style.text_size, style.text_upper)
     title_end = drop if drop > 0 else min(3.5, total)
     if segments and title_img is not None and segments[0].kind != "intro":
         title_end = min(title_end, segments[0].end)
-    fx = Effects(style, out, beats, downbeat, drop, total, title_img, title_end, seed)
+    fx = Effects(style, out, beats, downbeat, drop, total, title_img, title_end, seed, caption_img)
 
     os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     afade_out = max(0.0, total - style.fade_out * 1.5)

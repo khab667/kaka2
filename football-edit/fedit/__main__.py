@@ -84,7 +84,8 @@ def cmd_render(args):
         print(f"■ Rendu {path}")
         t0 = time.time()
         render(segments, shots, style, out_cfg, music, start, beats, downbeat, drop, path,
-               title=proj.get("titre", ""), subtitle=proj.get("sous_titre", ""), seed=seed)
+               title=proj.get("titre", ""), subtitle=proj.get("sous_titre", ""),
+               caption=proj.get("legende", ""), seed=seed)
         with open(path.replace(".mp4", ".plan.json"), "w", encoding="utf-8") as f:
             json.dump({"musique": os.path.basename(music), "debut_musique": round(start, 3), "bpm": round(m.tempo, 1),
                        "drop": round(drop, 3), "plans": plan}, f, ensure_ascii=False, indent=1)

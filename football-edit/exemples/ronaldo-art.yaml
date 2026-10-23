@@ -1,0 +1,15 @@
+# Edit Cristiano Ronaldo dans le style « the art of. » (inspiré de @kora.flow7).
+#   python3 -m fedit render exemples/ronaldo-art.yaml --variantes 3
+titre: "the art of."
+legende: "Cristiano Ronaldo"
+style: art
+duree: 30
+
+musique:
+  # Freeze Corleone — Freeze Raël (LMF, 2020)
+  source: "https://www.youtube.com/watch?v=_Zey1wgfA-c"
+  debut: auto
+
+clips:
+  # Cristiano Ronaldo 100 Legendary Goals Impossible To Forget (1080p 60 i/s)
+  - source: "https://www.youtube.com/watch?v=mmeLCAP74KA"

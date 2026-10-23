@@ -30,10 +30,15 @@ class Style:
     vignette: bool = True
     grain: float = 0.0
     bars: int = 0  # bandes noires haut/bas (pixels en 1080x1920)
-    framing: str = "crop"  # "crop" (plein écran, recadré sur l'action) ou "fit" (fond flou)
+    framing: str = "crop"  # "crop" (plein écran, recadré sur l'action), "fit" (fond flou) ou "square" (carré sur fond noir)
     frame_zoom: float = 1.0  # zoom supplémentaire dans la source
     fade_in: float = 0.2
     fade_out: float = 0.6
+    # Texte : taille (part de la largeur), position verticale (0 = haut, 1 = bas), pulsation sur les beats.
+    text_size: float = 0.16
+    text_y: float = 0.72
+    text_pulse: float = 0.07
+    text_upper: bool = True
 
 
 PRESETS = {
@@ -70,6 +75,34 @@ PRESETS = {
         grain=0.06,
         fade_in=0.6,
         fade_out=1.2,
+    ),
+    # Inspiré des edits « the art of. » : image carrée sur fond noir, petit texte centré,
+    # couleurs naturelles, aucun effet tape-à-l'œil, ralentis sur les gestes.
+    "art": Style(
+        "art",
+        beats_per_cut=(4, 4, 2),
+        min_shot=0.9,
+        speed_intro=0.8,
+        speed_hype=0.9,
+        ramp=(1.0, 0.45, 0.45),
+        ramp_min_shot=1.4,
+        motion_blur=False,
+        zoom_cut=0.0,
+        zoom_beat=0.0,
+        shake=0.0,
+        rotation=0.0,
+        flash=0.0,
+        rgb_split=0.0,
+        pre_drop_black=0.0,
+        grade="eq=contrast=1.05:saturation=1.08,unsharp=5:5:0.5",
+        vignette=False,
+        framing="square",
+        fade_in=0.3,
+        fade_out=1.0,
+        text_size=0.042,
+        text_y=0.5,
+        text_pulse=0.0,
+        text_upper=False,
     ),
     "classique": Style(
         "classique",
