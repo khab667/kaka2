@@ -59,6 +59,7 @@ def resolve_clips(project: dict, dest: str) -> list[Clip]:
         if isinstance(entry, str):
             entry = {"source": entry}
         src = _local(project["_dir"], entry["source"])
+        mask = tuple(entry["masque"]) if entry.get("masque") else None
         moments = []
         for mo in entry.get("moments") or []:
             star = False
@@ -69,14 +70,14 @@ def resolve_clips(project: dict, dest: str) -> list[Clip]:
         if is_url(src) and moments:
             # On ne télécharge que les passages indiqués : chaque passage devient un clip.
             files = fetch(src, dest, sections=[(a, b) for a, b, _ in moments])
-            clips += [Clip(f, star=star) for f, (_, _, star) in zip(files, moments)]
+            clips += [Clip(f, star=star, mask=mask) for f, (_, _, star) in zip(files, moments)]
         else:
             path = fetch(src, dest)[0]
             if moments:
                 for a, b, star in moments:
-                    clips.append(Clip(path, ranges=[(a, b)], star=star))
+                    clips.append(Clip(path, ranges=[(a, b)], star=star, mask=mask))
             else:
-                clips.append(Clip(path, star=bool(entry.get("vedette"))))
+                clips.append(Clip(path, star=bool(entry.get("vedette")), mask=mask))
     if not clips:
         raise SystemExit("Le projet ne contient aucun clip (clé `clips`).")
     return clips

@@ -81,7 +81,7 @@ PRESETS = {
     "art": Style(
         "art",
         beats_per_cut=(4, 4, 2),
-        min_shot=0.9,
+        min_shot=0.8,
         speed_intro=0.8,
         speed_hype=0.9,
         ramp=(1.0, 0.45, 0.45),

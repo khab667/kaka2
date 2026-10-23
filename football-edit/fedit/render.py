@@ -39,6 +39,9 @@ def _source_filter(shot: Shot, style: Style, out: Output) -> str:
     W, H = out.width, out.height
     src_fps = c.fps if c.fps <= 61 else 60
     pre = f"fps={src_fps:.6f}"
+    if c.mask:
+        x, y, w, h = c.mask
+        pre += f",delogo=x={x}:y={y}:w={w}:h={h}"
     if style.framing == "square":
         # Carré centré sur l'action, posé au milieu d'un fond noir.
         side = min(c.width, c.height)

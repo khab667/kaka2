@@ -22,6 +22,7 @@ class Clip:
     path: str
     ranges: list = field(default_factory=list)  # [(début, fin)] autorisés ; vide = toute la vidéo
     star: bool = False  # passage "vedette" : réservé aux moments forts (drop)
+    mask: tuple | None = None  # (x, y, largeur, hauteur) d'un logo à effacer, en pixels de la source
     # Rempli par analyze() :
     duration: float = 0.0
     fps: float = 30.0

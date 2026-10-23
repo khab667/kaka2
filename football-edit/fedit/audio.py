@@ -28,6 +28,10 @@ class MusicAnalysis:
     def is_downbeat(self, i: int) -> bool:
         return (i - self.downbeat_phase) % 4 == 0
 
+    def nearest_downbeat(self, t: float) -> int:
+        idx = np.arange(self.downbeat_phase, len(self.beats), 4)
+        return int(idx[np.argmin(np.abs(self.beats[idx] - t))])
+
 
 def _to_wav(path: str, cache_dir: str) -> str:
     """Convertit n'importe quel fichier audio/vidéo en WAV mono (lisible par soundfile)."""
@@ -131,10 +135,13 @@ def analyze(path: str, cache_dir: str = ".fedit-cache") -> MusicAnalysis:
     intensity = np.convolve(np.pad(energy, 1, mode="edge"), [0.25, 0.5, 0.25], mode="valid")
 
     # Drop : le beat où l'énergie des 8 beats suivants dépasse le plus celle des 8 précédents,
+    # plus le saut brut des basses d'un beat à l'autre (l'entrée de la 808 / grosse caisse est nette),
     # en privilégiant les premiers temps de mesure.
+    bass_db = _per_beat(10 * np.log10(low + 1e-9), frame_times[: len(low)], beats)
+    step = np.clip(np.diff(bass_db, prepend=bass_db[0]) / 20, -1, 1)
     best, drop_index = -np.inf, min(len(beats) - 1, 16)
     for i in range(8, len(beats) - 8):
-        score = energy[i : i + 8].mean() - energy[i - 8 : i].mean()
+        score = energy[i : i + 8].mean() - energy[i - 8 : i].mean() + 0.3 * step[i]
         if (i - phase) % 4 == 0:
             score += 0.05
         if score > best:

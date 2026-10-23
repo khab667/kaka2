@@ -54,6 +54,8 @@ def cmd_render(args):
     print("♪ Musique…")
     music = projmod.resolve_music(proj, sources)
     m = audio.analyze(music, cache)
+    if music_cfg.get("drop") is not None:
+        m.drop_index = m.nearest_downbeat(projmod.parse_time(music_cfg["drop"]))
     start, end = audio.choose_window(m, duration, None if debut in (None, "auto") else projmod.parse_time(debut))
     print(f"  {m.tempo:.1f} BPM · drop à {fmt(m.drop)} · extrait {fmt(start)} → {fmt(end)}")
 
