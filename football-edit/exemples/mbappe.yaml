@@ -1,0 +1,38 @@
+# Exemple de projet. Lance-le avec :
+#   python3 -m fedit render exemples/mbappe.yaml
+# Remplace les liens par les vidéos et la musique de ton choix (YouTube, TikTok ou fichiers locaux).
+
+titre: "Mbappé"
+sous_titre: "Saison 2025/26"
+
+# hype | velocity | cinematique | classique
+style: velocity
+
+# Durée du montage en secondes (TikTok : 15 à 30 s marche le mieux).
+duree: 22
+
+musique:
+  source: "https://www.youtube.com/watch?v=LIEN_DE_LA_MUSIQUE"
+  # "auto" = le drop tombe vers 35 % du montage. Sinon un temps, ex. "1:05".
+  debut: auto
+
+clips:
+  # Une compilation entière : l'outil choisit lui-même les passages les plus intenses.
+  - source: "https://www.youtube.com/watch?v=LIEN_COMPILATION"
+
+  # Seulement certains moments (seuls ces passages sont téléchargés).
+  - source: "https://www.youtube.com/watch?v=LIEN_MATCH"
+    moments:
+      - "2:14-2:22"
+      # vedette = l'action phare, placée en priorité sur le drop.
+      - { t: "5:40-5:52", vedette: true }
+
+  # Un fichier déjà sur l'ordinateur (chemin relatif à ce fichier).
+  # - source: "clips/but.mp4"
+
+# Réglages fins facultatifs (voir fedit/styles.py pour la liste complète).
+# reglages:
+#   framing: fit          # garde tout le terrain avec un fond flou au lieu de recadrer
+#   flash: 0.8
+#   shake: 14
+#   grade: "eq=contrast=1.15:saturation=1.4"

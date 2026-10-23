@@ -1,0 +1,7 @@
+librosa>=0.10
+numpy
+opencv-python-headless
+soundfile
+Pillow
+PyYAML
+yt-dlp

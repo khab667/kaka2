@@ -1,0 +1,5 @@
+.fedit-cache/
+sources/
+rendus/
+__pycache__/
+*.pyc
