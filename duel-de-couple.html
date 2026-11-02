@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Duel de Couple</title>
 <style>
+  :root { color-scheme: dark; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
@@ -14,52 +15,67 @@
     transition: background-color .6s ease;
     overflow-x: hidden;
   }
-  #app { min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
+  #app {
+    min-height: 100%; display: flex; align-items: center; justify-content: center;
+    padding-block: 28px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
   .screen { width: 100%; max-width: 760px; animation: fade .35s ease; }
   @keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-  h1 { font-size: clamp(30px, 6vw, 52px); font-weight: 800; line-height: 1.15; }
-  h2 { font-size: clamp(22px, 4vw, 30px); font-weight: 800; margin-bottom: 12px; }
+  h1 { font-size: clamp(28px, 7vw, 52px); font-weight: 800; line-height: 1.15; text-wrap: balance; }
+  h2 { font-size: clamp(22px, 5vw, 30px); font-weight: 800; margin-bottom: 10px; text-wrap: balance; }
   p  { line-height: 1.5; }
   .center { text-align: center; }
   .muted { opacity: .7; }
-  .brand { text-align: center; font-weight: 700; font-size: 22px; opacity: .5; margin-bottom: 14px; letter-spacing: .3px; }
+  .brand { text-align: center; font-weight: 700; font-size: 20px; opacity: .5; margin-bottom: 14px; }
+  .label { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; opacity: .7; margin: 18px 0 8px; }
 
   /* ---------- Boutons & champs ---------- */
   button {
     font: inherit; font-weight: 700; cursor: pointer; border: 0; border-radius: 999px;
-    padding: 14px 26px; font-size: 17px; background: #fff; color: #222;
-    transition: transform .12s ease, opacity .2s ease, background .2s ease;
+    padding: 14px 24px; font-size: 17px; background: #fff; color: #222;
+    transition: transform .12s ease, background .2s ease, color .2s ease;
   }
   button:hover { transform: translateY(-2px); }
   button:active { transform: translateY(0) scale(.98); }
-  button:focus-visible, input:focus-visible, .bar:focus-visible { outline: 3px solid #ffd54a; outline-offset: 3px; }
+  button:focus-visible, input:focus-visible, textarea:focus-visible, .bar:focus-visible { outline: 3px solid #ffd54a; outline-offset: 3px; }
   button.ghost { background: rgba(255,255,255,.14); color: #fff; }
   button.ghost:hover { background: rgba(255,255,255,.24); }
   button.small { padding: 8px 14px; font-size: 14px; }
   button.danger { background: rgba(0,0,0,.35); color: #ffb3b3; }
-  .row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 28px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 24px; }
   .row.left { justify-content: flex-start; }
 
-  input[type=text] {
-    font: inherit; font-size: 18px; color: #fff; width: 100%;
+  input[type=text], textarea {
+    font: inherit; font-size: 17px; color: #fff; width: 100%;
     background: rgba(0,0,0,.28); border: 2px solid rgba(255,255,255,.18);
-    border-radius: 14px; padding: 12px 16px;
+    border-radius: 14px; padding: 12px 14px;
   }
-  input[type=text]::placeholder { color: rgba(255,255,255,.45); }
+  textarea { resize: vertical; min-height: 110px; font-size: 15px; word-break: break-all; }
+  input::placeholder, textarea::placeholder { color: rgba(255,255,255,.45); }
   label.field { display: block; font-weight: 700; margin-bottom: 6px; opacity: .85; }
 
-  .card { background: rgba(0,0,0,.22); border-radius: 22px; padding: 22px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
+  .card { background: rgba(0,0,0,.22); border-radius: 22px; padding: 20px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid2 > * { min-width: 0; }
+  @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } .card { padding: 16px; } }
 
-  /* ---------- Accueil ---------- */
-  .steps { list-style: none; display: grid; gap: 10px; margin-top: 18px; }
+  /* Sélecteurs (mode, nombre) */
+  .seg { display: flex; gap: 6px; background: rgba(0,0,0,.28); border-radius: 999px; padding: 5px; flex-wrap: wrap; }
+  .seg button { flex: 1; background: transparent; color: #fff; padding: 10px 12px; font-size: 15px; }
+  .seg button.on { background: #fff; color: #222; }
+  .packs { display: flex; flex-wrap: wrap; gap: 8px; }
+  .packs button { background: rgba(255,255,255,.1); color: #fff; font-size: 15px; padding: 10px 14px; border: 2px solid transparent; }
+  .packs button.on { background: #fff; color: #222; }
+  .packs button .cnt { opacity: .6; font-weight: 600; margin-left: 4px; }
+
+  .steps { list-style: none; display: grid; gap: 10px; margin-top: 22px; }
   .steps li { display: flex; gap: 12px; align-items: flex-start; }
   .steps b.n { flex: 0 0 28px; height: 28px; border-radius: 50%; background: #fff; color: #333; display: grid; place-items: center; font-size: 14px; }
-  .catline { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .chip { background: rgba(255,255,255,.14); border-radius: 999px; padding: 5px 12px; font-size: 14px; }
+  .error { color: #ffd54a; font-weight: 700; margin-top: 10px; min-height: 1.4em; }
+  .ok { color: #b9ffcb; font-weight: 700; margin-top: 10px; min-height: 1.4em; }
 
   /* ---------- Barre de note ---------- */
   .bar {
@@ -72,38 +88,41 @@
   .bar .ticks span { flex: 1; border-right: 2px solid rgba(0,0,0,.12); }
   .bar .ticks span:last-child { border-right: 0; }
 
-  .rate .top { display: flex; justify-content: space-between; font-weight: 700; opacity: .75; margin-bottom: 70px; gap: 12px; flex-wrap: wrap; }
-  .rate .note { display: flex; align-items: baseline; gap: 14px; margin-top: 22px; flex-wrap: wrap; }
-  .rate .note .val { font-size: 64px; font-weight: 800; line-height: 1; }
-  .rate .note .comment { font-size: 22px; font-weight: 700; opacity: .9; }
-  .rate h1 { margin-top: 70px; }
-  .quick { display: flex; gap: 6px; margin-top: 18px; flex-wrap: wrap; }
-  .quick button { padding: 8px 0; width: 44px; font-size: 15px; background: rgba(0,0,0,.25); color: #fff; }
+  .rate .top { display: flex; justify-content: space-between; font-weight: 700; opacity: .75; margin-bottom: clamp(24px, 8vh, 70px); gap: 12px; flex-wrap: wrap; }
+  .rate .note { display: flex; align-items: baseline; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+  .rate .note .val { font-size: 60px; font-weight: 800; line-height: 1; }
+  .rate .note .comment { font-size: 21px; font-weight: 700; opacity: .9; }
+  .rate h1 { margin-top: clamp(28px, 7vh, 70px); }
+  .pack-tag { display: inline-block; margin-top: clamp(24px, 6vh, 56px); font-size: 14px; font-weight: 700; background: rgba(0,0,0,.25); border-radius: 999px; padding: 4px 12px; }
+  .pack-tag + h1 { margin-top: 10px; }
+  .quick { display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px; margin-top: 16px; max-width: 560px; }
+  .quick button { padding: 9px 0; font-size: 15px; background: rgba(0,0,0,.25); color: #fff; }
   .quick button.on { background: #fff; color: #222; }
-  .hint { margin-top: 18px; font-size: 14px; opacity: .6; }
+  .hint { margin-top: 16px; font-size: 14px; opacity: .6; }
 
   /* ---------- Révélation ---------- */
-  .duo { display: grid; gap: 22px; margin-top: 36px; }
-  .duo .who { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 8px; font-size: 18px; }
-  .duo .who .num { font-size: 22px; }
-  .verdict-line { margin-top: 30px; font-size: 22px; font-weight: 700; }
+  .duo { display: grid; gap: 22px; margin-top: 32px; }
+  .duo .who { display: flex; justify-content: space-between; gap: 10px; font-weight: 700; margin-bottom: 8px; font-size: 18px; }
+  .duo .who .num { font-size: 22px; white-space: nowrap; }
+  .verdict-line { margin-top: 28px; font-size: 22px; font-weight: 700; }
 
   /* ---------- Résultat final ---------- */
-  .winner { font-size: clamp(26px, 5vw, 40px); font-weight: 800; text-align: center; margin: 8px 0 26px; }
+  .winner { font-size: clamp(26px, 6vw, 40px); font-weight: 800; text-align: center; margin: 8px 0 24px; text-wrap: balance; }
   .pct { font-size: 58px; font-weight: 800; line-height: 1; margin: 10px 0 6px; }
   .tag { display: inline-block; background: #fff; color: #222; border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 15px; }
   .kv { margin-top: 14px; display: grid; gap: 6px; font-size: 15px; }
   .kv b { opacity: .7; font-weight: 600; }
-  .table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 15px; }
+  .tablewrap { overflow-x: auto; }
+  .table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 15px; font-variant-numeric: tabular-nums; }
   .table th, .table td { padding: 8px 6px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.12); }
-  .table td.n, .table th.n { text-align: center; width: 70px; }
+  .table td.n, .table th.n { text-align: center; width: 64px; }
   .gap-hot { color: #ffd54a; font-weight: 800; }
+  .answer { font-size: 18px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
 
   /* ---------- Éditeur de catégories ---------- */
-  .catlist { display: grid; gap: 10px; margin-top: 16px; max-height: 52vh; overflow-y: auto; padding-right: 4px; }
-  .catrow { display: grid; grid-template-columns: 64px 1fr auto; gap: 8px; align-items: center; }
-  .catrow input.emoji { text-align: center; padding: 12px 6px; }
-  .error { color: #ffd54a; font-weight: 700; margin-top: 12px; min-height: 1.4em; }
+  .catlist { display: grid; gap: 10px; margin-top: 16px; max-height: 50vh; overflow-y: auto; padding-right: 4px; }
+  .catrow { display: grid; grid-template-columns: 58px 1fr auto; gap: 8px; align-items: center; }
+  .catrow input.emoji { text-align: center; padding: 12px 4px; }
 
   .confetti { position: fixed; top: -20px; font-size: 26px; pointer-events: none; animation: fall linear forwards; z-index: 10; }
   @keyframes fall { to { transform: translateY(110vh) rotate(540deg); opacity: .8; } }
@@ -118,32 +137,118 @@
 
 <script>
 /* =========================================================
-   DUEL DE COUPLE — chacun note l'autre en secret,
-   puis on révèle les notes catégorie par catégorie.
+   DUEL DE COUPLE
+   Chacun note l'autre en secret, puis on révèle les notes.
+   Deux modes : « Ensemble » (un seul écran qu'on se passe)
+   et « À distance » (on s'envoie un code par message).
    ========================================================= */
 
-const DEFAULT_CATS = [
-  { emoji: "🧠", name: "Se souvenir des petites choses" },
-  { emoji: "🌦️", name: "Gérer mes sautes d'humeur" },
-  { emoji: "🎁", name: "Les cadeaux" },
-  { emoji: "😂", name: "Me faire rire" },
-  { emoji: "💋", name: "Les bisous" },
-  { emoji: "👂", name: "L'écoute" },
-  { emoji: "💬", name: "Les SMS" },
+/* ⚠️ Pour garder les codes compatibles entre téléphones :
+   ajouter de nouvelles catégories uniquement À LA FIN d'un pack,
+   et de nouveaux packs uniquement À LA FIN de la liste. */
+const PACKS = [
+  { key: "classique", emoji: "💞", name: "Classique", cats: [
+    ["🧠", "Se souvenir des petites choses"], ["🌦️", "Gérer mes sautes d'humeur"], ["🎁", "Les cadeaux"],
+    ["😂", "Me faire rire"], ["💋", "Les bisous"], ["👂", "L'écoute"], ["💬", "Les SMS"],
+    ["🤗", "Les câlins"], ["🫶", "Me soutenir quand ça va mal"], ["🍝", "La cuisine"],
+    ["📸", "Me prendre en photo"], ["🗓️", "Organiser nos rendez-vous"], ["💐", "Les surprises"],
+    ["🗣️", "Les compliments"], ["🎶", "La musique en voiture"], ["👪", "Être adorable avec ma famille"],
+    ["🕰️", "La ponctualité"], ["📞", "Les appels"], ["🌙", "Les conversations tard le soir"], ["🧸", "Me consoler"],
+  ]},
+  { key: "piquant", emoji: "😈", name: "Piquant", cats: [
+    ["😤", "Gérer sa jalousie"], ["🙈", "Ne pas regarder les autres quand je suis là"], ["📱", "Rester discret sur les likes Insta"],
+    ["💔", "Ne jamais parler de son ex"], ["🙄", "Reconnaître quand on a tort"], ["🤐", "Garder mes secrets"],
+    ["🔍", "Ne pas fouiller mon téléphone"], ["⚡", "Répondre vite à mes messages"], ["🧊", "Ne pas bouder"],
+    ["🥊", "Se disputer à la loyale"], ["🙏", "S'excuser en premier"], ["🤥", "Mentir sans se faire griller"],
+    ["🫣", "Supporter mes amis"], ["👻", "Ne pas me ghoster quand il y a les potes"], ["🎮", "Me choisir plutôt que son téléphone"],
+    ["😒", "Supporter mes défauts"], ["🗯️", "Ne jamais me comparer aux autres"], ["🕵️", "Savoir quand je mens"],
+    ["🤔", "Deviner ce qui ne va pas quand je dis « rien »"], ["😇", "Faire semblant d'aimer mes cadeaux"],
+  ]},
+  { key: "coquin", emoji: "🌶️", name: "Coquin (léger)", cats: [
+    ["🔥", "La séduction"], ["😏", "Les regards qui en disent long"], ["💋", "Les bisous dans le cou"],
+    ["🕯️", "Créer une ambiance romantique"], ["👀", "Remarquer quand je me suis fait beau/belle"], ["🌹", "Les mots doux"],
+    ["💌", "Les messages un peu osés"], ["💃", "Danser collé-serré"], ["🤭", "Les sous-entendus"],
+    ["🛌", "Les câlins sous la couette"], ["💆", "Les massages"], ["🍓", "Le petit-déj au lit"],
+    ["😘", "Embrasser (la technique)"], ["🔐", "Garder une part de mystère"], ["🥵", "Me faire rougir"],
+    ["👔", "Son style vestimentaire"], ["🧴", "Sentir bon"], ["🦋", "Me donner des papillons dans le ventre"],
+    ["😍", "Me faire craquer d'un seul regard"], ["🎀", "Les petites attentions coquines"],
+  ]},
+  { key: "decale", emoji: "🦖", name: "Décalé", cats: [
+    ["🦖", "Imiter un dinosaure"], ["🧟", "Survivre à une apocalypse zombie avec moi"], ["🛒", "Faire les courses sans rien oublier"],
+    ["🍕", "Me laisser la dernière part de pizza"], ["🐸", "Ses blagues nulles"], ["🎤", "Chanter sous la douche"],
+    ["🕺", "Danser n'importe comment"], ["🕷️", "Me sauver d'une araignée"], ["🐶", "Parler aux animaux"],
+    ["🧳", "Faire une valise"], ["🗺️", "Le sens de l'orientation"], ["🍳", "Ne pas brûler les pâtes"],
+    ["😴", "Ne pas ronfler"], ["🛏️", "Me laisser de la place dans le lit"], ["🧦", "Ranger ses chaussettes"],
+    ["🎬", "Choisir un film en moins de 10 minutes"], ["🥶", "Supporter mes pieds froids"], ["🤳", "Les selfies ratés"],
+    ["🏝️", "Survivre sur une île déserte avec moi"], ["🎲", "Perdre sans râler aux jeux de société"],
+  ]},
+  { key: "serieux", emoji: "🏡", name: "Sérieux", cats: [
+    ["🤝", "La confiance"], ["💍", "Me voir dans son futur"], ["💸", "Gérer l'argent"], ["🧹", "Le ménage"],
+    ["👶", "Serait un bon parent"], ["🌍", "Partir en voyage avec moi"], ["💪", "Me pousser à progresser"],
+    ["📚", "Me soutenir dans mes études"], ["🧘", "Me calmer quand je stresse"], ["🏠", "Vivre ensemble"],
+  ]},
 ];
+const BANK = [];
+PACKS.forEach(p => p.cats.forEach(([emoji, name]) => BANK.push({ id: BANK.length, emoji, name, pack: p.key })));
+const PACK_BY_KEY = Object.fromEntries(PACKS.map(p => [p.key, p]));
 
 const PALETTE = ["#7a0000", "#00117a", "#004a7a", "#007a5f", "#7a3500", "#157a00",
-                 "#5b007a", "#7a0050", "#00627a", "#6b5a00"];
+                 "#5b007a", "#7a0050", "#00627a", "#6b5a00", "#3d2a7a", "#7a2a00"];
 const NEUTRAL = "#4d4d4d";
 const COMMENTS = ["Catastrophe 💀", "Aïe… 😬", "Très bof 😕", "Bof 🤨", "Moyen 😐", "Correct 🙂",
                   "Pas mal 😊", "Bien 😄", "Très bien 😍", "Excellent 🔥", "Parfait 👑"];
-const STORE_KEY = "duelDeCouple.v1";
+const STORE_KEY = "duelDeCouple.v2";
+const COUNTS = [10, 15, 20, 0];   // 0 = toutes
+
+/* Idées de questions pour le mode « Questions secrètes » */
+const QBANK = [
+  { key: "nous", emoji: "💞", name: "Nous deux", list: [
+    "Quel est ton premier souvenir de moi ?", "C'est quoi notre meilleur moment ensemble ?",
+    "Qu'est-ce qui t'a fait craquer chez moi ?", "Quelle est ma pire habitude ?",
+    "Quel surnom tu me donnes dans ta tête ?", "Quelle chanson te fait penser à nous ?",
+    "Qu'est-ce que je fais qui te fait toujours sourire ?", "Quel est mon plat préféré ?",
+    "C'est quoi ma plus grande peur ?", "Décris-moi en 3 mots.",
+  ]},
+  { key: "piquant", emoji: "😈", name: "Piquant", list: [
+    "Lequel de mes amis te saoule le plus ?", "De qui tu as déjà été jaloux/jalouse ?",
+    "Un petit mensonge que tu m'as déjà dit ?", "Qu'est-ce que tu changerais chez moi ?",
+    "Notre pire dispute, c'était pour quoi ?", "Tu as déjà regardé mon téléphone en cachette ?",
+    "Qu'est-ce que tu n'as jamais osé me dire ?", "Le truc le plus gênant que j'ai fait devant toi ?",
+    "Qui de nous deux est le plus de mauvaise foi ?", "Tu as déjà stalké mon ex ?",
+  ]},
+  { key: "coquin", emoji: "🌶️", name: "Coquin (léger)", list: [
+    "Quelle tenue tu préfères sur moi ?", "Le moment où tu m'as trouvé(e) le plus irrésistible ?",
+    "Ton endroit préféré pour un bisou ?", "À quoi ressemble notre date idéal ?",
+    "Qu'est-ce qui te fait le plus d'effet chez moi ?", "Le compliment que tu rêves d'entendre de moi ?",
+    "Un rendez-vous surprise que tu aimerais que j'organise ?", "Ton souvenir de câlin préféré ?",
+    "Qu'est-ce qui te fait craquer quand je te parle ?", "Le regard ou le geste qui te fait fondre ?",
+  ]},
+  { key: "decale", emoji: "🦖", name: "Décalé", list: [
+    "Si j'étais un animal, je serais quoi ?", "Quel super-pouvoir tu me donnerais ?",
+    "Qui de nous deux survit le plus longtemps à une apocalypse zombie ?", "Si on était un duo de film, ce serait lequel ?",
+    "Si j'étais un plat, je serais quoi ?", "Le prénom de notre futur chat ?",
+    "Si je devenais célèbre, ce serait pour quoi ?", "Le pire cadeau que je pourrais t'offrir ?",
+    "Quelle émission de télé-réalité on gagnerait ?", "Si on échangeait nos corps une journée, tu ferais quoi ?",
+  ]},
+  { key: "futur", emoji: "🏡", name: "Futur", list: [
+    "Où tu nous vois dans 5 ans ?", "Notre maison idéale, elle est où ?",
+    "Combien d'enfants (ou d'animaux) ?", "Le prochain voyage qu'on doit absolument faire ?",
+    "Un objectif qu'on devrait se fixer ensemble ?", "Qu'est-ce que tu veux qu'on fasse avant la fin de l'année ?",
+  ]},
+];
 
 const S = {
+  game: "notes",                  // "notes" (Duel de notes) ou "questions" (Questions secrètes)
+  Q: { qs: [], ans: [[], []], w: [false, false] },   // questions : {t, by}, réponses, « a fini d'écrire »
+  qMe: 0, qCur: null, qTheme: "nous",
+  mode: "remote",                 // "remote" (à distance) ou "local" (ensemble)
   names: ["", ""],
-  cats: DEFAULT_CATS.map(c => ({ ...c })),
-  ratings: [[], []],   // ratings[r][i] = note donnée par le joueur r à l'autre, catégorie i
-  rater: 0, idx: 0, reveal: 0,
+  packs: { classique: true, piquant: true, coquin: false, decale: true, serieux: false, perso: true },
+  count: 15,
+  custom: [],                     // catégories perso : {emoji, name}
+  cats: [],                       // catégories tirées pour la partie
+  ratings: [[], []],              // ratings[r][i] = note donnée par le joueur r à l'autre
+  rater: 0, idx: 0,
   onKey: null,
 };
 
@@ -151,12 +256,19 @@ const S = {
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
-    if (d && Array.isArray(d.cats) && d.cats.length) S.cats = d.cats;
-    if (d && Array.isArray(d.names)) S.names = d.names;
-  } catch (e) { /* stockage indisponible : on garde les valeurs par défaut */ }
+    if (!d) return;
+    if (Array.isArray(d.names)) S.names = d.names;
+    if (d.packs) S.packs = { ...S.packs, ...d.packs };
+    if (COUNTS.includes(d.count)) S.count = d.count;
+    if (Array.isArray(d.custom)) S.custom = d.custom;
+    if (d.mode === "local" || d.mode === "remote") S.mode = d.mode;
+    if (d.game === "notes" || d.game === "questions") S.game = d.game;
+  } catch (e) { /* stockage indisponible : valeurs par défaut */ }
 }
 function save() {
-  try { localStorage.setItem(STORE_KEY, JSON.stringify({ cats: S.cats, names: S.names })); } catch (e) {}
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify({ names: S.names, packs: S.packs, count: S.count, custom: S.custom, mode: S.mode, game: S.game }));
+  } catch (e) {}
 }
 
 /* ---------- Utilitaires ---------- */
@@ -165,22 +277,25 @@ const app = $("#app");
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const color = i => PALETTE[i % PALETTE.length];
 const other = p => 1 - p;
-function setBg(c) { document.body.style.backgroundColor = c; }
 function show(html, bg, onKey) {
-  setBg(bg);
+  document.body.style.backgroundColor = bg;
   app.innerHTML = `<div class="screen">${html}</div>`;
   S.onKey = onKey || null;
   window.scrollTo(0, 0);
   const f = app.querySelector("[autofocus]");
-  if (f) f.focus();
+  if (f && window.matchMedia("(pointer: fine)").matches) f.focus();
 }
 document.addEventListener("keydown", e => { if (S.onKey) S.onKey(e); });
 
 function catLabel(c) { return `${c.emoji ? esc(c.emoji) + " " : ""}${esc(c.name)}`; }
-function received(p) { return S.ratings[other(p)]; }   // notes reçues par le joueur p
+function packOf(c) {
+  if (c.pack === "perso") return "✏️ Mes catégories";
+  const p = PACK_BY_KEY[c.pack];
+  return p ? `${p.emoji} ${p.name}` : "";
+}
+function received(p) { return S.ratings[other(p)]; }
 function percent(p) {
-  const arr = received(p);
-  const sum = arr.reduce((a, b) => a + b, 0);
+  const sum = received(p).reduce((a, b) => a + b, 0);
   return Math.round(sum / (S.cats.length * 10) * 100);
 }
 function verdict(pct) {
@@ -190,84 +305,233 @@ function verdict(pct) {
   if (pct >= 40) return "Il va falloir bosser 📚";
   return "Alerte rouge 🚨";
 }
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function pool() {
+  const list = BANK.filter(c => S.packs[c.pack]);
+  if (S.packs.perso) S.custom.forEach(c => list.push({ emoji: c.emoji, name: c.name, pack: "perso" }));
+  return list;
+}
+
+/* ---------- Codes à envoyer (mode à distance) ---------- */
+const DIGITS = "0123456789A";   // A = 10
+function b64enc(str) {
+  let bin = "";
+  new TextEncoder().encode(str).forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function b64dec(s) {
+  s = s.replace(/-/g, "+").replace(/_/g, "/");
+  while (s.length % 4) s += "=";
+  return new TextDecoder().decode(Uint8Array.from(atob(s), ch => ch.charCodeAt(0)));
+}
+function makeCode(full) {
+  const payload = {
+    v: 2,
+    n: S.names,
+    c: S.cats.map(c => (c.id != null ? c.id : [c.emoji, c.name])),
+    r: [S.ratings[0], full ? S.ratings[1] : null].map(a => (a ? a.map(v => DIGITS[v]).join("") : "")),
+  };
+  return "DUEL-" + b64enc(JSON.stringify(payload));
+}
+function readCode(text) {
+  const m = String(text).match(/DUEL-([A-Za-z0-9_-]+)/);
+  if (!m) return { error: "Je ne trouve pas de code. Il doit commencer par « DUEL- »." };
+  let d;
+  try { d = JSON.parse(b64dec(m[1])); } catch (e) { return { error: "Ce code est incomplet ou abîmé. Recopie-le en entier." }; }
+  if (d && d.v === 2 && d.g === "q") return readQCode(d);
+  if (!d || d.v !== 2 || !Array.isArray(d.n) || !Array.isArray(d.c) || !Array.isArray(d.r)) return { error: "Ce code ne vient pas de ce jeu." };
+  const cats = [];
+  for (const x of d.c) {
+    if (typeof x === "number") { if (!BANK[x]) return { error: "Ce code vient d'une autre version du jeu." }; cats.push(BANK[x]); }
+    else if (Array.isArray(x)) cats.push({ emoji: String(x[0] || ""), name: String(x[1] || ""), pack: "perso" });
+  }
+  const parse = s => (s ? Array.from(s).map(ch => DIGITS.indexOf(ch)) : null);
+  const r0 = parse(d.r[0]), r1 = parse(d.r[1]);
+  if (!r0 || r0.length !== cats.length || r0.some(v => v < 0)) return { error: "Ce code est incomplet. Recopie-le en entier." };
+  if (r1 && (r1.length !== cats.length || r1.some(v => v < 0))) return { error: "Ce code est incomplet. Recopie-le en entier." };
+  return { names: [String(d.n[0] || "Joueur 1"), String(d.n[1] || "Joueur 2")], cats, r0, r1 };
+}
+function shareLink(code) {
+  // Le lien direct ne marche que si le jeu est hébergé sur un vrai site (GitHub Pages…)
+  if (/github\.io$/.test(location.hostname)) return location.origin + location.pathname + "#" + code;
+  return "";
+}
+function makeQCode(next) {
+  const Q = S.Q;
+  return "DUEL-" + b64enc(JSON.stringify({
+    v: 2, g: "q", n: S.names, x: next,
+    q: Q.qs.map(q => [q.t, q.by]),
+    a: Q.ans,
+    w: Q.w.map(Number),
+  }));
+}
+function readQCode(d) {
+  const bad = { error: "Ce code est incomplet ou abîmé. Recopie-le en entier." };
+  if (!Array.isArray(d.n) || !Array.isArray(d.q) || !Array.isArray(d.a) || d.a.length !== 2 || !Array.isArray(d.w)) return bad;
+  const qs = d.q.map(x => ({ t: String(x[0] || ""), by: x[1] === 1 ? 1 : 0 }));
+  const ans = d.a.map(arr => (Array.isArray(arr) ? qs.map((_, i) => (arr[i] == null ? null : String(arr[i]))) : null));
+  if (!ans[0] || !ans[1]) return bad;
+  return { game: "questions", names: [String(d.n[0] || "Joueur 1"), String(d.n[1] || "Joueur 2")],
+           Q: { qs, ans, w: [!!d.w[0], !!d.w[1]] }, next: d.x === 1 ? 1 : 0 };
+}
+function handleCode(text) {
+  const g = readCode(text);
+  if (g.error) return g.error;
+  S.mode = "remote";
+  if (g.game === "questions") {
+    S.game = "questions";
+    S.names = g.names;
+    S.Q = g.Q;
+    if (qComplete()) qRevealIntro();
+    else { S.qMe = g.next; S.qCur = null; qNext(); }
+    return "";
+  }
+  S.game = "notes";
+  S.names = g.names;
+  S.cats = g.cats;
+  if (!g.r1) { S.ratings = [g.r0, g.cats.map(() => 5)]; handoff(1); }
+  else { S.ratings = [g.r0, g.r1]; revealIntro(); }
+  return "";
+}
 
 /* =========================================================
-   ÉCRAN 1 — Accueil
+   Accueil
    ========================================================= */
 function home() {
-  const chips = S.cats.map(c => `<span class="chip">${catLabel(c)}</span>`).join("");
+  const remote = S.mode === "remote";
+  const nbPerso = S.custom.length;
+  const packBtns = PACKS.map(p => `
+    <button class="${S.packs[p.key] ? "on" : ""}" data-pack="${p.key}" aria-pressed="${!!S.packs[p.key]}">${p.emoji} ${esc(p.name)}<span class="cnt">${p.cats.length}</span></button>`).join("")
+    + `<button class="${S.packs.perso ? "on" : ""}" data-pack="perso" aria-pressed="${!!S.packs.perso}">✏️ Mes catégories<span class="cnt">${nbPerso}</span></button>`;
+  const countBtns = COUNTS.map(n => `<button class="${S.count === n ? "on" : ""}" data-count="${n}">${n || "Toutes"}</button>`).join("");
+  const quiz = S.game === "questions";
+  const steps = quiz ? (remote ? `
+      <li><b class="n">1</b><span>Tu écris (ou choisis) tes questions, puis tu y réponds en secret.</span></li>
+      <li><b class="n">2</b><span>Tu envoies le code : sur son téléphone, il/elle écrit ses questions et répond à tout, sans voir tes réponses.</span></li>
+      <li><b class="n">3</b><span>Il/elle te renvoie son code : tu réponds à ses questions, puis toutes les réponses sont dévoilées.</span></li>`
+    : `
+      <li><b class="n">1</b><span>Chacun écrit (ou choisit) ses questions à son tour.</span></li>
+      <li><b class="n">2</b><span>Chacun répond à toutes les questions pendant que l'autre ne regarde pas.</span></li>
+      <li><b class="n">3</b><span>Toutes les réponses sont dévoilées côte à côte.</span></li>`)
+    : remote ? `
+      <li><b class="n">1</b><span>Tu notes ton/ta partenaire sur ton écran, en secret.</span></li>
+      <li><b class="n">2</b><span>Tu lui envoies le code par WhatsApp ou SMS. Sur son téléphone, il/elle ouvre le jeu, appuie sur « J'ai reçu un code » et te note à son tour.</span></li>
+      <li><b class="n">3</b><span>Il/elle te renvoie son code : vous découvrez les résultats tous les deux.</span></li>`
+    : `
+      <li><b class="n">1</b><span>Le joueur 1 note le joueur 2 en secret. L'autre ne regarde pas !</span></li>
+      <li><b class="n">2</b><span>On se passe l'écran : le joueur 2 note le joueur 1.</span></li>
+      <li><b class="n">3</b><span>Révélation des notes une par une, puis verdict final.</span></li>`;
+
   show(`
     <div class="center">
       <div class="brand">💞 Duel de Couple</div>
       <h1>Qui est le meilleur partenaire&nbsp;?</h1>
-      <p class="muted" style="margin-top:10px">Notez-vous l'un l'autre en secret, puis découvrez les résultats ensemble.</p>
+      <p class="muted" style="margin-top:10px">Notez-vous l'un l'autre en secret, puis découvrez les résultats.</p>
     </div>
-    <div class="card" style="margin-top:28px">
-      <div class="grid2">
-        <div><label class="field" for="n0">Joueur 1</label><input type="text" id="n0" maxlength="20" placeholder="Prénom" value="${esc(S.names[0])}" autofocus></div>
-        <div><label class="field" for="n1">Joueur 2</label><input type="text" id="n1" maxlength="20" placeholder="Prénom" value="${esc(S.names[1])}"></div>
+    <div class="card" style="margin-top:24px">
+      <div class="label" style="margin-top:0">À quoi vous jouez</div>
+      <div class="seg">
+        <button data-game="notes" class="${quiz ? "" : "on"}">⭐ Duel de notes</button>
+        <button data-game="questions" class="${quiz ? "on" : ""}">❓ Questions secrètes</button>
       </div>
-      <div class="catline">
-        <b>${S.cats.length} catégorie${S.cats.length > 1 ? "s" : ""}</b>
-        <button class="ghost small" id="edit">✏️ Personnaliser les catégories</button>
+      <div class="label">Comment vous jouez</div>
+      <div class="seg">
+        <button data-mode="remote" class="${remote ? "on" : ""}">📱 À distance</button>
+        <button data-mode="local" class="${remote ? "" : "on"}">👫 Ensemble, un écran</button>
       </div>
-      <div class="chips">${chips}</div>
+      <div class="grid2" style="margin-top:14px">
+        <div><label class="field" for="n0">${remote ? "Ton prénom" : "Joueur 1"}</label><input type="text" id="n0" maxlength="20" placeholder="Prénom" value="${esc(S.names[0])}"></div>
+        <div><label class="field" for="n1">${remote ? "Prénom de ton/ta partenaire" : "Joueur 2"}</label><input type="text" id="n1" maxlength="20" placeholder="Prénom" value="${esc(S.names[1])}"></div>
+      </div>
+      ${quiz ? "" : `
+      <div class="label">Packs de catégories</div>
+      <div class="packs">${packBtns}</div>
+      <div class="row left" style="margin-top:10px"><button class="ghost small" id="edit">✏️ Écrire mes catégories</button></div>
+      <div class="label">Catégories par partie (tirées au hasard)</div>
+      <div class="seg">${countBtns}</div>`}
+      <div class="error" id="err"></div>
     </div>
-    <ul class="steps">
-      <li><b class="n">1</b><span>Le joueur 1 note le joueur 2 sur chaque catégorie (de 0 à 10). L'autre ne regarde pas&nbsp;!</span></li>
-      <li><b class="n">2</b><span>On échange : le joueur 2 note le joueur 1.</span></li>
-      <li><b class="n">3</b><span>Révélation des notes une par une, puis verdict final.</span></li>
-    </ul>
-    <div class="row"><button id="go">Commencer le duel →</button></div>
-  `, NEUTRAL, e => { if (e.key === "Enter") start(); });
+    <div class="row">
+      <button class="ghost" id="recv">📩 J'ai reçu un code</button>
+      <button id="go">Commencer →</button>
+    </div>
+    <ul class="steps">${steps}</ul>
+  `, NEUTRAL, e => { if (e.key === "Enter" && e.target.tagName !== "BUTTON") begin(); });
 
-  $("#edit").onclick = () => { readNames(); editor(); };
-  $("#go").onclick = start;
+  app.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { readNames(); S.mode = b.dataset.mode; save(); home(); });
+  app.querySelectorAll("[data-game]").forEach(b => b.onclick = () => { readNames(); S.game = b.dataset.game; save(); home(); });
+  app.querySelectorAll("[data-pack]").forEach(b => b.onclick = () => {
+    const k = b.dataset.pack;
+    S.packs[k] = !S.packs[k];
+    b.classList.toggle("on", S.packs[k]);
+    b.setAttribute("aria-pressed", S.packs[k]);
+    $("#err").textContent = "";
+    save();
+  });
+  app.querySelectorAll("[data-count]").forEach(b => b.onclick = () => {
+    S.count = +b.dataset.count;
+    app.querySelectorAll("[data-count]").forEach(x => x.classList.toggle("on", x === b));
+    save();
+  });
+  if ($("#edit")) $("#edit").onclick = () => { readNames(); editor(); };
+  $("#recv").onclick = () => { readNames(); receive(); };
+  $("#go").onclick = begin;
 }
 function readNames() {
   if ($("#n0")) S.names = [$("#n0").value.trim(), $("#n1").value.trim()];
 }
-function start() {
+function fixNames() {
   readNames();
-  if (!S.names[0]) S.names[0] = "Joueur 1";
-  if (!S.names[1]) S.names[1] = "Joueur 2";
+  if (!S.names[0]) S.names[0] = S.mode === "remote" ? "Moi" : "Joueur 1";
+  if (!S.names[1]) S.names[1] = S.mode === "remote" ? "Mon cœur" : "Joueur 2";
   if (S.names[0].toLowerCase() === S.names[1].toLowerCase()) S.names[1] += " (2)";
   save();
+}
+function begin() { S.game === "questions" ? qStart() : start(); }
+function start() {
+  readNames();
+  const list = pool();
+  if (!list.length) {
+    const e = $("#err");
+    if (e) e.textContent = "Choisis au moins un pack (ou écris tes propres catégories).";
+    else home();
+    return;
+  }
+  fixNames();
+  const n = S.count && S.count < list.length ? S.count : list.length;
+  S.cats = shuffle(list.slice()).slice(0, n);
   S.ratings = [S.cats.map(() => 5), S.cats.map(() => 5)];
   handoff(0);
 }
 
 /* =========================================================
-   ÉCRAN 2 — Éditeur de catégories
+   Mes catégories (éditeur)
    ========================================================= */
 function editor() {
-  let draft = S.cats.map(c => ({ ...c }));
-
-  const rows = () => draft.map((c, i) => `
+  let draft = S.custom.map(c => ({ ...c }));
+  const rows = () => draft.length ? draft.map((c, i) => `
     <div class="catrow">
-      <input type="text" class="emoji" data-i="${i}" data-k="emoji" maxlength="4" value="${esc(c.emoji)}" aria-label="Emoji">
-      <input type="text" data-i="${i}" data-k="name" maxlength="50" value="${esc(c.name)}" placeholder="Nom de la catégorie" aria-label="Nom">
+      <input type="text" class="emoji" id="e${i}" data-i="${i}" data-k="emoji" maxlength="4" value="${esc(c.emoji)}" aria-label="Emoji">
+      <input type="text" id="c${i}" data-i="${i}" data-k="name" maxlength="60" value="${esc(c.name)}" placeholder="Ex : Me piquer mes sweats" aria-label="Nom de la catégorie">
       <button class="danger small" data-del="${i}" title="Supprimer">✕</button>
-    </div>`).join("");
+    </div>`).join("") : `<p class="muted">Aucune catégorie perso pour l'instant. Appuie sur « Ajouter ».</p>`;
 
   function paint() {
     $("#list").innerHTML = rows();
-    $("#list").querySelectorAll("input").forEach(inp => {
-      inp.oninput = () => { draft[+inp.dataset.i][inp.dataset.k] = inp.value; };
-    });
-    $("#list").querySelectorAll("[data-del]").forEach(b => {
-      b.onclick = () => { draft.splice(+b.dataset.del, 1); paint(); };
-    });
-    $("#count").textContent = `${draft.length} / 30`;
+    $("#list").querySelectorAll("input").forEach(inp => inp.oninput = () => { draft[+inp.dataset.i][inp.dataset.k] = inp.value; });
+    $("#list").querySelectorAll("[data-del]").forEach(b => b.onclick = () => { draft.splice(+b.dataset.del, 1); paint(); });
+    $("#count").textContent = `${draft.length} / 50`;
   }
 
   show(`
-    <h2>✏️ Tes catégories</h2>
-    <p class="muted">Garde celles de base, modifie-les ou ajoute les tiennes (emoji facultatif).</p>
+    <h2>✏️ Mes catégories</h2>
+    <p class="muted">Ajoute vos délires, vos private jokes, vos trucs bien à vous. Elles sont tirées au sort avec les packs quand « Mes catégories » est activé.</p>
     <div class="catlist" id="list"></div>
     <div class="row left">
       <button class="ghost small" id="add">＋ Ajouter</button>
-      <button class="ghost small" id="reset">↺ Catégories de base</button>
       <span class="muted" id="count" style="align-self:center"></span>
     </div>
     <div class="error" id="err"></div>
@@ -279,48 +543,79 @@ function editor() {
 
   paint();
   $("#add").onclick = () => {
-    if (draft.length >= 30) { $("#err").textContent = "30 catégories maximum."; return; }
+    if (draft.length >= 50) { $("#err").textContent = "50 catégories maximum."; return; }
     draft.push({ emoji: "⭐", name: "" });
     paint();
     const inputs = $("#list").querySelectorAll('input[data-k="name"]');
     inputs[inputs.length - 1].focus();
   };
-  $("#reset").onclick = () => { draft = DEFAULT_CATS.map(c => ({ ...c })); paint(); };
   $("#cancel").onclick = home;
   $("#ok").onclick = () => {
-    const clean = draft.map(c => ({ emoji: c.emoji.trim(), name: c.name.trim() })).filter(c => c.name);
-    if (!clean.length) { $("#err").textContent = "Il faut au moins une catégorie avec un nom."; return; }
-    S.cats = clean;
+    S.custom = draft.map(c => ({ emoji: c.emoji.trim(), name: c.name.trim() })).filter(c => c.name);
+    if (S.custom.length) S.packs.perso = true;
     save();
     home();
   };
 }
 
 /* =========================================================
-   ÉCRAN 3 — Passage de l'écran
+   Recevoir un code
    ========================================================= */
-function handoff(r) {
-  S.rater = r; S.idx = 0;
-  const me = esc(S.names[r]), you = esc(S.names[other(r)]);
+function receive() {
   show(`
-    <div class="center">
-      <div class="brand">💞 Duel de Couple · Manche ${r + 1} / 2</div>
-      <h1>🔒 Au tour de ${me}</h1>
-      <p style="margin-top:16px;font-size:20px">${me}, prends le clavier et note <b>${you}</b>.</p>
-      <p class="muted" style="margin-top:8px;font-size:18px">${you}, ne regarde pas l'écran 👀</p>
-      <div class="row"><button id="go" autofocus>Je suis ${me}, c'est parti →</button></div>
+    <h2>📩 J'ai reçu un code</h2>
+    <p class="muted">Colle ici le message reçu par WhatsApp ou SMS (tout le message, ça marche aussi).</p>
+    <textarea id="paste" placeholder="DUEL-…" style="margin-top:16px" autofocus></textarea>
+    <div class="error" id="err"></div>
+    <div class="row">
+      <button class="ghost" id="back">← Retour</button>
+      <button id="ok">Valider</button>
     </div>
-  `, NEUTRAL, e => { if (e.key === "Enter") { e.preventDefault(); rate(); } });
-  $("#go").onclick = rate;
+  `, NEUTRAL);
+  $("#back").onclick = home;
+  $("#ok").onclick = () => { const err = handleCode($("#paste").value); if (err) $("#err").textContent = err; };
 }
 
 /* =========================================================
-   ÉCRAN 4 — Notation (barre + catégorie)
+   Écran avant de noter
+   ========================================================= */
+function handoff(r) {
+  S.rater = r; S.idx = 0;
+  const me = esc(S.names[r]), you = esc(S.names[other(r)]), n = S.cats.length;
+  let html;
+  if (S.mode === "local") {
+    html = `
+      <div class="brand">💞 Duel de Couple · Manche ${r + 1} / 2</div>
+      <h1>🔒 Au tour de ${me}</h1>
+      <p style="margin-top:16px;font-size:20px">${me}, prends l'écran et note <b>${you}</b> sur ${n} catégories.</p>
+      <p class="muted" style="margin-top:8px;font-size:18px">${you}, ne regarde pas 👀</p>
+      <div class="row"><button class="ghost" id="back">← Accueil</button><button id="go" autofocus>Je suis ${me}, c'est parti →</button></div>`;
+  } else if (r === 0) {
+    html = `
+      <div class="brand">💞 Duel de Couple · À distance</div>
+      <h1>✍️ À toi de noter ${you}</h1>
+      <p style="margin-top:16px;font-size:20px">${n} catégories tirées au hasard. Sois honnête…</p>
+      <p class="muted" style="margin-top:8px;font-size:18px">${you} ne verra tes notes qu'à la toute fin.</p>
+      <div class="row"><button class="ghost" id="back">← Accueil</button><button id="go" autofocus>C'est parti →</button></div>`;
+  } else {
+    html = `
+      <div class="brand">💞 Duel de Couple · À distance</div>
+      <h1>📩 ${you} t'a noté(e) en secret&nbsp;!</h1>
+      <p style="margin-top:16px;font-size:20px">À ton tour, ${me} : note <b>${you}</b> sur les mêmes ${n} catégories.</p>
+      <p class="muted" style="margin-top:8px;font-size:18px">Les notes de ${you} seront révélées quand tu auras fini 😏</p>
+      <div class="row"><button id="go" autofocus>C'est parti →</button></div>`;
+  }
+  show(`<div class="center">${html}</div>`, NEUTRAL, e => { if (e.key === "Enter") { e.preventDefault(); rate(); } });
+  $("#go").onclick = rate;
+  if ($("#back")) $("#back").onclick = home;
+}
+
+/* =========================================================
+   Notation
    ========================================================= */
 function rate() {
-  const r = S.rater, i = S.idx, n = S.cats.length;
-  const c = S.cats[i];
-  const quick = Array.from({ length: 11 }, (_, v) => `<button data-v="${v}">${v}</button>`).join("");
+  const r = S.rater, i = S.idx, n = S.cats.length, c = S.cats[i];
+  const quick = Array.from({ length: 11 }, (_, v) => `<button data-v="${v}" aria-label="Note ${v}">${v}</button>`).join("");
 
   show(`
     <div class="rate">
@@ -332,22 +627,22 @@ function rate() {
       </div>
       <div class="note"><span class="val" id="val"></span><span class="muted" style="font-size:24px;font-weight:700">/10</span><span class="comment" id="cm"></span></div>
       <div class="quick">${quick}</div>
+      <span class="pack-tag">${packOf(c)}</span>
       <h1>${catLabel(c)}</h1>
-      <div class="hint">Clique ou glisse sur la barre · ← → pour ajuster · Entrée pour valider</div>
+      <div class="hint">Touche la barre ou un chiffre · ← → au clavier · Entrée pour valider</div>
       <div class="row">
         <button class="ghost" id="back">← Retour</button>
         <button id="ok">${i === n - 1 ? "Terminer ✓" : "Valider →"}</button>
       </div>
     </div>
   `, color(i), e => {
-    // Entrée sur Retour/Valider : laisser le bouton agir (sauf sur les pastilles 0-10)
     if (e.key === "Enter" && e.target.tagName === "BUTTON" && !e.target.dataset.v) return;
     if (e.key === "ArrowRight" || e.key === "ArrowUp") { e.preventDefault(); set(get() + 1); }
     else if (e.key === "ArrowLeft" || e.key === "ArrowDown") { e.preventDefault(); set(get() - 1); }
     else if (e.key === "Home") set(0);
     else if (e.key === "End") set(10);
     else if (e.key === "Enter") { e.preventDefault(); next(); }
-    else if (e.key === "Backspace" || e.key === "Escape") { e.preventDefault(); back(); }
+    else if (e.key === "Escape") { e.preventDefault(); back(); }
   });
 
   const bar = $("#bar");
@@ -375,27 +670,90 @@ function rate() {
   app.querySelectorAll(".quick button").forEach(b => b.onclick = () => set(+b.dataset.v));
 
   function next() {
-    if (i < n - 1) { S.idx++; rate(); }
-    else if (r === 0) handoff(1);
-    else revealIntro();
+    if (i < n - 1) { S.idx++; rate(); return; }
+    if (S.mode === "local") { r === 0 ? handoff(1) : revealIntro(); return; }
+    sendScreen(r === 1);
   }
   function back() {
-    if (i > 0) { S.idx--; rate(); }
-    else handoff(r);
+    if (i > 0) { S.idx--; rate(); } else handoff(r);
   }
   $("#ok").onclick = next;
   $("#back").onclick = back;
 }
 
 /* =========================================================
-   ÉCRAN 5 — Révélation catégorie par catégorie
+   Envoyer le code (mode à distance)
+   ========================================================= */
+function sendScreen(full) {
+  const [a, b] = S.names;
+  const n = S.cats.length;
+  codeScreen({
+    code: makeCode(full),
+    to: full ? a : b,
+    full,
+    msg: full
+      ? `💞 Duel de Couple\n${b} a fini de te noter ! Ouvre le jeu, appuie sur « J'ai reçu un code » et colle ce message pour voir les résultats :`
+      : `💞 Duel de Couple\n${a} t'a noté(e) en secret sur ${n} catégories 👀\nOuvre le jeu, appuie sur « J'ai reçu un code » et colle ce message pour noter ${a} à ton tour :`,
+    onSee: revealIntro,
+  });
+}
+
+/* Écran commun : afficher un code à envoyer, et (si besoin) coller la réponse */
+function codeScreen({ code, to, full, msg, onSee, sub }) {
+  const link = shareLink(code);
+  const text = `${msg}\n\n${code}` + (link ? `\n\nOu clique directement : ${link}` : "");
+  to = esc(to);
+  show(`
+    <div class="brand">💞 Duel de Couple · À distance</div>
+    <h2>📤 Envoie ce message à ${to}</h2>
+    <p class="muted">${sub || (full
+      ? `Pour que ${to} découvre aussi les résultats de son côté.`
+      : `Par WhatsApp, SMS, Insta… ${to} n'a besoin que de son téléphone et du lien du jeu.`)}</p>
+    <textarea id="codebox" readonly style="margin-top:14px">${esc(text)}</textarea>
+    <div class="row">
+      <button id="copy">📋 Copier le message</button>
+      ${navigator.share ? '<button class="ghost" id="share">📤 Partager</button>' : ""}
+    </div>
+    <div class="ok center" id="status"></div>
+    ${full ? `
+      <div class="row"><button id="see">Voir les résultats 🎬</button></div>`
+    : `
+      <div class="card" style="margin-top:22px">
+        <b>Quand ${to} te renvoie son code, colle-le ici :</b>
+        <textarea id="paste" placeholder="DUEL-…" style="margin-top:10px;min-height:80px"></textarea>
+        <div class="error" id="err"></div>
+        <div class="row" style="margin-top:8px"><button id="ok">Continuer →</button></div>
+      </div>
+      <p class="muted center" style="margin-top:14px;font-size:14px">Tu peux fermer le jeu en attendant : plus tard, utilise « J'ai reçu un code » sur l'accueil.</p>
+      <div class="row"><button class="ghost" id="home">Accueil</button></div>`}
+  `, NEUTRAL);
+
+  const status = t => $("#status").textContent = t;
+  const selectBox = () => { const t = $("#codebox"); t.focus(); t.select(); status("Message sélectionné : fais « Copier » (Ctrl+C sur PC)."); };
+  $("#copy").onclick = () => {
+    try {
+      navigator.clipboard.writeText(text).then(() => status("Copié ✅ Colle-le dans WhatsApp ou tes SMS."), selectBox);
+    } catch (e) { selectBox(); }
+  };
+  if ($("#share")) $("#share").onclick = () => {
+    navigator.share({ text }).catch(e => { if (e && e.name !== "AbortError") selectBox(); });
+  };
+  if (full) $("#see").onclick = onSee;
+  else {
+    $("#ok").onclick = () => { const err = handleCode($("#paste").value); if (err) $("#err").textContent = err; };
+    $("#home").onclick = home;
+  }
+}
+
+/* =========================================================
+   Révélation catégorie par catégorie
    ========================================================= */
 function revealIntro() {
   show(`
     <div class="center">
       <div class="brand">💞 Duel de Couple</div>
       <h1>🎬 L'heure de vérité</h1>
-      <p style="margin-top:16px;font-size:20px">Installez-vous tous les deux devant l'écran.</p>
+      <p style="margin-top:16px;font-size:20px">${S.mode === "local" ? "Installez-vous tous les deux devant l'écran." : "Les notes vont être révélées une par une…"}</p>
       <div class="row">
         <button class="ghost" id="skip">Voir directement le résultat</button>
         <button id="go" autofocus>Révéler les notes →</button>
@@ -408,10 +766,10 @@ function revealIntro() {
 
 function reveal(i) {
   const n = S.cats.length, c = S.cats[i];
-  const a = received(0)[i], b = received(1)[i];   // notes reçues par J1 et J2
+  const a = received(0)[i], b = received(1)[i];
   const [n0, n1] = S.names.map(esc);
-  let line;
   const d = Math.abs(a - b);
+  let line;
   if (d === 0) line = "Égalité parfaite 🤝";
   else {
     const best = a > b ? n0 : n1;
@@ -419,7 +777,6 @@ function reveal(i) {
     else if (d >= 2) line = `Avantage ${best} 💪`;
     else line = `${best} gagne d'un cheveu 🤏`;
   }
-
   const row = (name, giver, v) => `
     <div>
       <div class="who"><span>${name} <span class="muted" style="font-weight:400">(noté par ${giver})</span></span><span class="num">${v}/10</span></div>
@@ -429,11 +786,9 @@ function reveal(i) {
   show(`
     <div class="rate">
       <div class="top"><span>Révélation</span><span>${i + 1} / ${n}</span></div>
-      <h1 style="margin-top:0">${catLabel(c)}</h1>
-      <div class="duo">
-        ${row(n0, n1, a)}
-        ${row(n1, n0, b)}
-      </div>
+      <span class="pack-tag" style="margin-top:0">${packOf(c)}</span>
+      <h1>${catLabel(c)}</h1>
+      <div class="duo">${row(n0, n1, a)}${row(n1, n0, b)}</div>
       <div class="verdict-line">${line}</div>
       <div class="row">
         ${i > 0 ? '<button class="ghost" id="prev">← Précédent</button>' : ""}
@@ -444,7 +799,6 @@ function reveal(i) {
     if (e.key === "Enter" || e.key === "ArrowRight") { e.preventDefault(); go(); }
     else if (e.key === "ArrowLeft" && i > 0) reveal(i - 1);
   });
-
   requestAnimationFrame(() => requestAnimationFrame(() => {
     app.querySelectorAll(".fill[data-w]").forEach(f => f.style.width = f.dataset.w + "%");
   }));
@@ -454,40 +808,33 @@ function reveal(i) {
 }
 
 /* =========================================================
-   ÉCRAN 6 — Résultat final
+   Résultat final
    ========================================================= */
 function final() {
   const p = [percent(0), percent(1)];
   const [n0, n1] = S.names.map(esc);
-  let title;
-  if (p[0] === p[1]) title = "🤝 Égalité parfaite ! Vous êtes faits l'un pour l'autre.";
-  else title = `🏆 ${p[0] > p[1] ? n0 : n1} remporte le duel !`;
-
-  const extremes = pl => {
-    const arr = received(pl);
-    const max = Math.max(...arr), min = Math.min(...arr);
-    const best = S.cats.filter((_, i) => arr[i] === max).map(catLabel).join(", ");
-    const worst = S.cats.filter((_, i) => arr[i] === min).map(catLabel).join(", ");
-    return { best, worst, max, min };
-  };
+  const title = p[0] === p[1]
+    ? "🤝 Égalité parfaite ! Vous êtes faits l'un pour l'autre."
+    : `🏆 ${p[0] > p[1] ? n0 : n1} remporte le duel !`;
 
   const card = pl => {
-    const x = extremes(pl);
+    const arr = received(pl);
+    const max = Math.max(...arr), min = Math.min(...arr);
+    const best = S.cats.filter((_, i) => arr[i] === max).slice(0, 3).map(catLabel).join(", ");
+    const worst = S.cats.filter((_, i) => arr[i] === min).slice(0, 3).map(catLabel).join(", ");
     return `
       <div class="card">
         <div style="font-size:20px;font-weight:800">${esc(S.names[pl])}</div>
         <div class="pct">${p[pl]}%</div>
         <span class="tag">${verdict(p[pl])}</span>
         <div class="kv">
-          <div><b>Point fort :</b> ${x.best} (${x.max}/10)</div>
-          <div><b>À travailler :</b> ${x.worst} (${x.min}/10)</div>
+          <div><b>Point fort :</b> ${best} (${max}/10)</div>
+          <div><b>À travailler :</b> ${worst} (${min}/10)</div>
         </div>
       </div>`;
   };
-
   const rows = S.cats.map((c, i) => {
-    const a = received(0)[i], b = received(1)[i];
-    const hot = Math.abs(a - b) >= 3;
+    const a = received(0)[i], b = received(1)[i], hot = Math.abs(a - b) >= 3;
     return `<tr><td>${catLabel(c)}</td><td class="n">${a}</td><td class="n">${b}</td>
             <td class="n ${hot ? "gap-hot" : ""}">${hot ? "⚠️ " : ""}${Math.abs(a - b)}</td></tr>`;
   }).join("");
@@ -497,26 +844,26 @@ function final() {
     <div class="brand">💞 Duel de Couple · Résultat</div>
     <div class="winner">${title}</div>
     <div class="grid2">${card(0)}${card(1)}</div>
-    <div class="card" style="margin-top:16px">
+    <div class="card" style="margin-top:14px">
       <b>Détail des notes reçues</b>
-      <table class="table">
-        <thead><tr><th>Catégorie</th><th class="n">${n0}</th><th class="n">${n1}</th><th class="n">Écart</th></tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
+      <div class="tablewrap">
+        <table class="table">
+          <thead><tr><th>Catégorie</th><th class="n">${n0}</th><th class="n">${n1}</th><th class="n">Écart</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
       <p class="muted" style="margin-top:12px">${talk
         ? `⚠️ ${talk} sujet${talk > 1 ? "s" : ""} avec un gros écart : parfait pour en discuter ensemble 😉`
         : "Aucun gros écart : vous êtes sur la même longueur d'onde ✨"}</p>
     </div>
     <div class="row">
-      <button class="ghost" id="home">Accueil</button>
       <button class="ghost" id="revoir">Revoir la révélation</button>
-      <button id="again" autofocus>Rejouer 🔁</button>
+      <button id="again" autofocus>Nouvelle partie 🔁</button>
     </div>
   `, NEUTRAL);
 
-  $("#home").onclick = home;
   $("#revoir").onclick = () => reveal(0);
-  $("#again").onclick = start;
+  $("#again").onclick = home;
   confetti();
 }
 
@@ -534,9 +881,276 @@ function confetti() {
   }
 }
 
+/* =========================================================
+   MODE « QUESTIONS SECRÈTES »
+   Chacun écrit ses questions, chacun répond à tout en secret,
+   puis toutes les réponses sont dévoilées.
+   ========================================================= */
+const Q_MAX = 15;
+
+function qStart() {
+  fixNames();
+  S.Q = { qs: [], ans: [[], []], w: [false, false] };
+  S.qMe = 0; S.qCur = null;
+  qNext();
+}
+function unanswered(p) { return S.Q.qs.findIndex((_, i) => S.Q.ans[p][i] == null); }
+function qComplete() { return S.Q.w[0] && S.Q.w[1] && unanswered(0) < 0 && unanswered(1) < 0; }
+function qStep() {
+  const Q = S.Q;
+  if (S.mode === "local") {
+    if (!Q.w[0]) return { p: 0, act: "write" };
+    if (!Q.w[1]) return { p: 1, act: "write" };
+    if (unanswered(0) >= 0) return { p: 0, act: "answer" };
+    if (unanswered(1) >= 0) return { p: 1, act: "answer" };
+    return { act: "reveal" };
+  }
+  const me = S.qMe;
+  if (!Q.w[me]) return { p: me, act: "write" };
+  if (unanswered(me) >= 0) return { p: me, act: "answer" };
+  return { p: me, act: "send" };
+}
+function qNext() {
+  const st = qStep();
+  if (st.act === "reveal") return qRevealIntro();
+  if (st.act === "send") return qSend();
+  if (S.qCur !== st.p) { S.qCur = st.p; return qHandoff(st); }
+  st.act === "write" ? qWrite(st.p) : qAnswer(st.p);
+}
+
+function qHandoff(st) {
+  const me = esc(S.names[st.p]), you = esc(S.names[other(st.p)]);
+  const Q = S.Q;
+  const fromYou = Q.qs.filter(q => q.by !== st.p).length;
+  let title, sub, hide;
+  if (S.mode === "local") {
+    title = st.act === "write" ? `✍️ Au tour de ${me} d'écrire ses questions` : `🔒 Au tour de ${me} de répondre`;
+    sub = st.act === "write"
+      ? `Écris ou choisis des questions pour vous deux (jusqu'à ${Q_MAX}).`
+      : `${Q.qs.length} questions t'attendent. Réponds sincèrement !`;
+    hide = `${you}, ne regarde pas l'écran 👀`;
+  } else if (st.act === "write" && !fromYou) {
+    title = `✍️ Écris tes questions`;
+    sub = `Écris ou choisis des questions, puis tu y réponds aussi. ${you} répondra aux mêmes sans voir tes réponses.`;
+    hide = "";
+  } else if (st.act === "write") {
+    title = `📩 ${you} t'a envoyé ${fromYou} question${fromYou > 1 ? "s" : ""} !`;
+    sub = `Écris d'abord les tiennes pour ${you}, puis réponds à tout.`;
+    hide = `Les réponses de ${you} restent cachées jusqu'à la fin 😏`;
+  } else {
+    title = `📩 ${you} a répondu et t'a posé des questions`;
+    sub = `Réponds-y pour découvrir toutes les réponses.`;
+    hide = "";
+  }
+  const first = S.mode === "remote" ? st.act === "write" && !fromYou : st.p === 0 && st.act === "write";
+  show(`
+    <div class="center">
+      <div class="brand">❓ Questions secrètes${S.mode === "local" ? "" : " · À distance"}</div>
+      <h1>${title}</h1>
+      <p style="margin-top:16px;font-size:20px">${sub}</p>
+      ${hide ? `<p class="muted" style="margin-top:8px;font-size:18px">${hide}</p>` : ""}
+      <div class="row">
+        ${first ? '<button class="ghost" id="back">← Accueil</button>' : ""}
+        <button id="go" autofocus>${S.mode === "local" ? `Je suis ${me}, c'est parti →` : "C'est parti →"}</button>
+      </div>
+    </div>
+  `, NEUTRAL, e => { if (e.key === "Enter") { e.preventDefault(); qNext(); } });
+  $("#go").onclick = qNext;
+  if ($("#back")) $("#back").onclick = home;
+}
+
+function qWrite(p) {
+  const Q = S.Q;
+  const mine = () => Q.qs.filter(q => q.by === p);
+  const theme = QBANK.find(t => t.key === S.qTheme) || QBANK[0];
+  let ideas = [];
+  const pickIdeas = () => {
+    const used = new Set(Q.qs.map(q => q.t));
+    ideas = shuffle(theme.list.filter(t => !used.has(t))).slice(0, 5);
+  };
+  pickIdeas();
+
+  show(`
+    <div class="rate">
+      <div class="top"><span>${esc(S.names[p])} écrit ses questions</span><span id="cnt"></span></div>
+      <h2>✍️ Tes questions pour ${esc(S.names[other(p)])}</h2>
+      <p class="muted">Vous y répondrez tous les deux, chacun sans voir la réponse de l'autre.</p>
+      <div class="catlist" id="mine" style="max-height:none"></div>
+      <div class="catrow" style="grid-template-columns:1fr auto;margin-top:12px">
+        <input type="text" id="qin" maxlength="140" placeholder="Écris une question…" autofocus>
+        <button id="add">＋</button>
+      </div>
+      <div class="label">Pas d'idée ? Pioche ici</div>
+      <div class="seg" id="themes">${QBANK.map(t => `<button data-theme="${t.key}" class="${t.key === theme.key ? "on" : ""}">${t.emoji} ${esc(t.name)}</button>`).join("")}</div>
+      <div class="packs" id="ideas" style="margin-top:10px"></div>
+      <div class="row left" style="margin-top:8px"><button class="ghost small" id="more">🎲 D'autres idées</button></div>
+      <div class="error" id="err"></div>
+      <div class="row"><button id="done"></button></div>
+    </div>
+  `, "#3a2f4a");
+
+  function paint() {
+    const list = mine();
+    $("#mine").innerHTML = list.length ? list.map(q => `
+      <div class="catrow" style="grid-template-columns:1fr auto">
+        <div class="card" style="padding:12px 14px;border-radius:14px">${esc(q.t)}</div>
+        <button class="danger small" data-del="${esc(q.t)}" title="Retirer">✕</button>
+      </div>`).join("") : `<p class="muted">Aucune question pour l'instant.</p>`;
+    $("#mine").querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+      const k = Q.qs.findIndex(q => q.by === p && q.t === b.dataset.del);
+      if (k >= 0) { Q.qs.splice(k, 1); Q.ans[0].splice(k, 1); Q.ans[1].splice(k, 1); }
+      paint();
+    });
+    $("#ideas").innerHTML = ideas.length
+      ? ideas.map((t, k) => `<button data-idea="${k}" style="text-align:left">＋ ${esc(t)}</button>`).join("")
+      : `<p class="muted">Tu as pris toutes les idées de ce thème !</p>`;
+    $("#ideas").querySelectorAll("[data-idea]").forEach(b => b.onclick = () => {
+      if (addQ(ideas[+b.dataset.idea])) { ideas.splice(+b.dataset.idea, 1); paint(); }
+    });
+    $("#cnt").textContent = `${list.length} / ${Q_MAX}`;
+    $("#done").textContent = list.length ? `J'ai fini (${list.length}) →` : "J'ai fini →";
+  }
+  function addQ(t) {
+    t = (t || "").trim();
+    $("#err").textContent = "";
+    if (!t) return false;
+    if (mine().length >= Q_MAX) { $("#err").textContent = `${Q_MAX} questions maximum chacun.`; return false; }
+    if (Q.qs.some(q => q.t.toLowerCase() === t.toLowerCase())) { $("#err").textContent = "Cette question est déjà dans la liste."; return false; }
+    Q.qs.push({ t, by: p });
+    Q.ans[0].push(null); Q.ans[1].push(null);
+    return true;
+  }
+  $("#add").onclick = () => { if (addQ($("#qin").value)) { $("#qin").value = ""; paint(); } $("#qin").focus(); };
+  $("#qin").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("#add").click(); } };
+  $("#themes").querySelectorAll("[data-theme]").forEach(b => b.onclick = () => { S.qTheme = b.dataset.theme; qWrite(p); });
+  $("#more").onclick = () => { pickIdeas(); paint(); };
+  $("#done").onclick = () => {
+    if ($("#qin").value.trim()) addQ($("#qin").value);
+    if (!mine().length) { $("#err").textContent = "Ajoute au moins une question (ou pioches-en une dans les idées)."; return; }
+    Q.w[p] = true;
+    qNext();
+  };
+  paint();
+}
+
+function qAnswer(p) {
+  const Q = S.Q, i = unanswered(p);
+  const q = Q.qs[i];
+  const done = Q.ans[p].filter(a => a != null).length;
+  const from = q.by === p ? "Ta question" : `Question de ${esc(S.names[q.by])}`;
+  show(`
+    <div class="rate">
+      <div class="top"><span>${esc(S.names[p])} répond</span><span>${done + 1} / ${Q.qs.length}</span></div>
+      <div class="brand">❓ Questions secrètes</div>
+      <span class="pack-tag">${from}</span>
+      <h1>${esc(q.t)}</h1>
+      <textarea id="ans" maxlength="300" placeholder="Ta réponse… (${esc(S.names[other(p)])} ne la verra qu'à la fin)" style="margin-top:24px" autofocus></textarea>
+      <div class="hint">Ctrl + Entrée pour valider</div>
+      <div class="error" id="err"></div>
+      <div class="row">
+        <button class="ghost" id="joker">🤐 Joker</button>
+        <button id="ok">Valider →</button>
+      </div>
+    </div>
+  `, color(i), e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); ok(); } });
+  function ok() {
+    const v = $("#ans").value.trim();
+    if (!v) { $("#err").textContent = "Écris une réponse, ou utilise le Joker 🤐"; return; }
+    Q.ans[p][i] = v;
+    qNext();
+  }
+  $("#ok").onclick = ok;
+  $("#joker").onclick = () => { Q.ans[p][i] = "🤐 Joker"; qNext(); };
+}
+
+function qSend() {
+  const me = S.qMe, you = other(me), Q = S.Q;
+  const full = qComplete();
+  const a = S.names[me];
+  const theirs = Q.qs.filter(q => q.by === me).length;
+  let msg;
+  if (full) msg = `❓ Duel de Couple · Questions secrètes\n${a} a répondu à tout ! Ouvre le jeu, appuie sur « J'ai reçu un code » et colle ce message pour voir toutes les réponses :`;
+  else if (!Q.w[you]) msg = `❓ Duel de Couple · Questions secrètes\n${a} t'a posé ${theirs} question${theirs > 1 ? "s" : ""} 👀\nOuvre le jeu, appuie sur « J'ai reçu un code », colle ce message, écris tes questions et réponds à tout :`;
+  else msg = `❓ Duel de Couple · Questions secrètes\n${a} a répondu et t'a posé ${theirs} question${theirs > 1 ? "s" : ""} 👀\nOuvre le jeu, appuie sur « J'ai reçu un code » et colle ce message pour répondre :`;
+  codeScreen({ code: makeQCode(you), to: S.names[you], full, msg, onSee: qRevealIntro });
+}
+
+function qRevealIntro() {
+  show(`
+    <div class="center">
+      <div class="brand">❓ Questions secrètes</div>
+      <h1>🎬 Toutes les réponses</h1>
+      <p style="margin-top:16px;font-size:20px">${S.Q.qs.length} questions, deux réponses à chaque fois…</p>
+      <div class="row">
+        <button class="ghost" id="skip">Tout voir d'un coup</button>
+        <button id="go" autofocus>Une par une →</button>
+      </div>
+    </div>
+  `, NEUTRAL, e => { if (e.key === "Enter") { e.preventDefault(); qReveal(0); } });
+  $("#go").onclick = () => qReveal(0);
+  $("#skip").onclick = qFinal;
+}
+function answerCard(p, i) {
+  return `<div class="card"><div class="label" style="margin-top:0">${esc(S.names[p])}</div>
+          <div class="answer">${esc(S.Q.ans[p][i] ?? "—")}</div></div>`;
+}
+function qReveal(i) {
+  const Q = S.Q, n = Q.qs.length, q = Q.qs[i];
+  show(`
+    <div class="rate">
+      <div class="top"><span>Révélation</span><span>${i + 1} / ${n}</span></div>
+      <span class="pack-tag" style="margin-top:0">Question de ${esc(S.names[q.by])}</span>
+      <h1>${esc(q.t)}</h1>
+      <div class="grid2" style="margin-top:28px">${answerCard(0, i)}${answerCard(1, i)}</div>
+      <div class="row">
+        ${i > 0 ? '<button class="ghost" id="prev">← Précédent</button>' : ""}
+        <button id="next" autofocus>${i === n - 1 ? "Récap de tout 📜" : "Suivant →"}</button>
+      </div>
+    </div>
+  `, color(i), e => {
+    if (e.key === "Enter" || e.key === "ArrowRight") { e.preventDefault(); go(); }
+    else if (e.key === "ArrowLeft" && i > 0) qReveal(i - 1);
+  });
+  const go = () => (i < n - 1 ? qReveal(i + 1) : qFinal());
+  $("#next").onclick = go;
+  if (i > 0) $("#prev").onclick = () => qReveal(i - 1);
+}
+function qFinal() {
+  const Q = S.Q;
+  const items = Q.qs.map((q, i) => `
+    <div class="card" style="border-left:6px solid ${color(i)}">
+      <div class="muted" style="font-size:14px">Question de ${esc(S.names[q.by])}</div>
+      <div style="font-size:19px;font-weight:800;margin:4px 0 12px">${esc(q.t)}</div>
+      <div class="grid2">
+        <div><div class="label" style="margin:0 0 4px">${esc(S.names[0])}</div><div class="answer">${esc(Q.ans[0][i] ?? "—")}</div></div>
+        <div><div class="label" style="margin:0 0 4px">${esc(S.names[1])}</div><div class="answer">${esc(Q.ans[1][i] ?? "—")}</div></div>
+      </div>
+    </div>`).join("");
+  show(`
+    <div class="brand">❓ Questions secrètes · Récap</div>
+    <div class="winner">📜 Toutes vos réponses</div>
+    <div style="display:grid;gap:12px">${items}</div>
+    <div class="row">
+      <button class="ghost" id="revoir">Revoir une par une</button>
+      <button id="again" autofocus>Nouvelle partie 🔁</button>
+    </div>
+  `, NEUTRAL);
+  $("#revoir").onclick = () => qReveal(0);
+  $("#again").onclick = home;
+  confetti();
+}
+
 /* ---------- Lancement ---------- */
 load();
-home();
+let opened = false;
+try {
+  if (location.hash.includes("DUEL-")) {
+    const h = decodeURIComponent(location.hash);
+    history.replaceState(null, "", location.pathname + location.search);
+    opened = !handleCode(h);
+  }
+} catch (e) {}
+if (!opened) home();
 </script>
 </body>
 </html>

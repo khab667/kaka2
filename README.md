@@ -1,16 +1,17 @@
 # kaka2
-## 💞 Duel de Couple (jeu PC)
+## 💞 Duel de Couple (jeu PC et téléphone)
 
-Fichier : `duel-de-couple.html` — aucun logiciel à installer.
+Fichier : `duel-de-couple.html`. Rien à installer : on l'ouvre dans un navigateur (double-clic sur PC).
 
-**Lancer le jeu :** télécharge le fichier puis double-clique dessus, il s'ouvre dans ton navigateur (Chrome, Edge, Firefox…). Ça marche même sans Internet.
+### Deux jeux
+- **⭐ Duel de notes** : chacun note l'autre en secret de 0 à 10 sur des catégories tirées au hasard, puis révélation et verdict.
+  Plus de 90 catégories réparties en 5 packs au choix (Classique, Piquant, Coquin léger, Décalé, Sérieux), plus tes propres catégories. Nombre de catégories par partie : 10, 15, 20 ou toutes.
+- **❓ Questions secrètes** : chacun écrit (ou pioche) ses questions, chacun répond à tout sans voir les réponses de l'autre, puis toutes les réponses sont dévoilées.
 
-**Principe :**
-1. Entrez vos deux prénoms.
-2. Le joueur 1 note le joueur 2 sur chaque catégorie (0 à 10), pendant que l'autre ne regarde pas.
-3. On échange : le joueur 2 note le joueur 1.
-4. Révélation des notes catégorie par catégorie, puis score final, verdict et sujets « à discuter ».
+### Deux façons de jouer
+- **📱 À distance** : chacun sur son appareil (PC ou téléphone). Le jeu donne un message avec un code à envoyer par WhatsApp ou SMS ; l'autre ouvre le jeu, appuie sur « J'ai reçu un code », colle le message et joue son tour.
+- **👫 Ensemble** : sur un seul écran que l'on se passe.
 
-**Catégories :** 7 catégories de base (petites attentions, sautes d'humeur, cadeaux, faire rire, bisous, écoute, SMS), modifiables avec le bouton « Personnaliser les catégories » (ajout, suppression, emoji, retour aux catégories de base). Elles restent enregistrées dans ton navigateur.
-
-**Commandes :** clic ou glisser sur la barre, pastilles 0–10, flèches ← → pour ajuster, Entrée pour valider, Échap pour revenir en arrière.
+### Jouer depuis un téléphone
+Activer GitHub Pages (Settings → Pages → Branch : `claude/pc-game-creation-jbs9qw`, dossier `/ (root)` → Save). Le jeu sera alors disponible à l'adresse :
+`https://khab667.github.io/kaka2/duel-de-couple.html`
